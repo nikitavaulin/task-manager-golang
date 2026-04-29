@@ -3,6 +3,8 @@ package core_http_server
 import (
 	"os"
 	"time"
+
+	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
 )
 
 type HTTPServerConfig struct {
@@ -19,10 +21,7 @@ func NewHTTPServerConfig() *HTTPServerConfig {
 }
 
 func ParseServerPort() string {
-	port := os.Getenv("TODO_PORT")
-	if port == "" {
-		return ":7540"
-	}
+	port := tools_envparser.GetEnvVarOrDefault("TODO_PORT", ":7540")
 	return port
 }
 
