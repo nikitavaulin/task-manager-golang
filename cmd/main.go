@@ -7,14 +7,27 @@ import (
 	"os/signal"
 	"syscall"
 
+	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
+	"github.com/nikitavaulin/task-manager-golang/pkg/db"
 )
 
-const webDirPath = "web"
+const (
+	webDirPath    = "web"
+	dbFileDefault = "scheduler.db"
+)
 
 func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
+
+	dbFile := tools_envparser.GetEnvVarOrDefault("TODO_DBFILE", dbFileDefault)
+	dbConn, err := db.Init(dbFile)
+	if err != nil {
+		fmt.Printf("failed to connect to db: %v\n", err)
+		os.Exit(1)
+	}
+	defer dbConn.Close()
 
 	router := core_http_server.NewRouter()
 	router.RegisterFileServer("/", webDirPath)
