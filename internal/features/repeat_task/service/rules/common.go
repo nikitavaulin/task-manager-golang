@@ -14,10 +14,17 @@ type DateInterval struct {
 	Days   int
 }
 
+func afterNow(date, now time.Time) bool {
+	return date.After(now)
+}
+
 func CalcNextDateByInterval(now, start time.Time, interval DateInterval) time.Time {
 	date := start
-	for date.Before(now) {
+	for {
 		date = date.AddDate(interval.Years, interval.Months, interval.Days)
+		if afterNow(date, now) {
+			break
+		}
 	}
 	return date
 }

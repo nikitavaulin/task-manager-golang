@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	repeat_rules "github.com/nikitavaulin/task-manager-golang/internal/features/repeat/rules"
+	repeat_rules "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/service/rules"
 )
 
 func ParseRepeatRule(repeat string) (repeat_rules.RepeatRule, error) {
@@ -54,7 +54,7 @@ func ParseRepeatRule(repeat string) (repeat_rules.RepeatRule, error) {
 			return nil, fmt.Errorf("param 'm' should have 1 or 2 argument(s), got: %d", argsCount)
 		}
 
-		days, err := parseDaysOfMonth(buf[1])
+		daysSelected, err := parseDaysOfMonth(buf[1])
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse days of month: %w", err)
 		}
@@ -64,10 +64,20 @@ func ParseRepeatRule(repeat string) (repeat_rules.RepeatRule, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to parse months: %w", err)
 			}
-			repeat_rules.NewMonthRule(days, months)
+			return repeat_rules.NewMonthRule(
+				daysSelected.daysOfMonth,
+				daysSelected.isLastDay,
+				daysSelected.isBeforeLastDay,
+				months,
+			)
 		}
 
-		return repeat_rules.NewMonthRule(days, nil)
+		return repeat_rules.NewMonthRule(
+			daysSelected.daysOfMonth,
+			daysSelected.isLastDay,
+			daysSelected.isBeforeLastDay,
+			nil,
+		)
 	}
 
 	return nil, fmt.Errorf("unknown time measurement unit")

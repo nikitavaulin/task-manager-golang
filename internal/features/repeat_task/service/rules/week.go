@@ -24,10 +24,10 @@ func (r WeekRule) CalcNextDate(now time.Time, start time.Time) time.Time {
 func (r WeekRule) closestDateFromDaysOfWeek(start time.Time) time.Time {
 	date := start
 	for {
+		date = date.AddDate(0, 0, 1)
 		isIncluded := r.daysOfWeek[date.Weekday()]
 		if isIncluded {
 			return date
 		}
-		date = date.AddDate(0, 0, 1)
 	}
 }

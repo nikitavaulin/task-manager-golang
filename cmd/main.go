@@ -9,6 +9,8 @@ import (
 
 	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
+	repeat_service "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/service"
+	repeat_task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/transport"
 	"github.com/nikitavaulin/task-manager-golang/pkg/db"
 )
 
@@ -29,8 +31,14 @@ func main() {
 	}
 	defer dbConn.Close()
 
+	repeatTaskService := repeat_service.NewRepeatTaskService()
+	repeatTaskTransport := repeat_task_transport_http.NewRepeatTaskHTTPTransportHandler(repeatTaskService)
+
 	router := core_http_server.NewRouter()
 	router.RegisterFileServer("/", webDirPath)
+	router.RegisterRoutes(
+		repeatTaskTransport.Routes()...,
+	)
 
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfig(),
