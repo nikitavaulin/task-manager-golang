@@ -14,6 +14,7 @@ type TaskService struct {
 type TaskRepository interface {
 	CreateTask(task domain.Task) (int64, error)
 	GetTasks(limit int, date, title *string) ([]domain.Task, error)
+	GetTask(taskID int64) (domain.Task, error)
 }
 
 type RepeatTaskSevice interface {

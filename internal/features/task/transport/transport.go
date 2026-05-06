@@ -14,6 +14,7 @@ type TaskHTTPTransportHandler struct {
 type TaskService interface {
 	CreateTask(task domain.Task) (int64, error)
 	GetTasks(limit int, search *string) ([]domain.Task, error)
+	GetTask(taskID int64) (domain.Task, error)
 }
 
 func NewTaskHTTPTransportHandler(taskService TaskService) *TaskHTTPTransportHandler {
@@ -33,6 +34,11 @@ func (h *TaskHTTPTransportHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodGet,
 			Path:    "/api/tasks",
 			Handler: h.GetTasks,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    "/api/task",
+			Handler: h.GetTask,
 		},
 	}
 }
