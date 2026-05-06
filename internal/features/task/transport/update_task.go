@@ -40,8 +40,7 @@ func (h *TaskHTTPTransportHandler) UpdateTask(rw http.ResponseWriter, r *http.Re
 		return
 	}
 
-	response := struct{}{}
-	responseHandler.JSONResponse(response, http.StatusOK)
+	responseHandler.NoContentJSONResponse(http.StatusNoContent)
 }
 
 func updateTaskDomainFromDTO(dto UpdateTaskRequestDTO) (domain.Task, error) {
