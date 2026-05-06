@@ -36,6 +36,11 @@ func (h *HTTPResponseHandler) NoContentResponse(statusCode int) {
 	h.rw.WriteHeader(statusCode)
 }
 
+func (h *HTTPResponseHandler) NoContentJSONResponse(statusCode int) {
+	h.rw.WriteHeader(statusCode)
+	h.JSONResponse(struct{}{}, statusCode)
+}
+
 func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 	var statusCode int
 	switch {
