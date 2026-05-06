@@ -41,3 +41,33 @@ func (r *TaskRepository) UpdateTask(task domain.Task) error {
 
 	return nil
 }
+
+func (r *TaskRepository) UpdateTaskDate(task domain.Task) error {
+	query := `
+		UPDATE scheduler
+		SET	
+			date = $1, 
+		WHERE
+			id = $2;
+	`
+
+	result, err := r.db.Exec(
+		query,
+		task.Date,
+		task.ID,
+	)
+	if err != nil {
+		return fmt.Errorf("failed to update task date in db: %w", err)
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get affected rows count: %w", err)
+	}
+
+	if affected == 0 {
+		return fmt.Errorf("task with ID=%d: %w", task.ID, err)
+	}
+
+	return nil
+}
