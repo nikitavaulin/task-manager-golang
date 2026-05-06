@@ -22,5 +22,8 @@ func NewDayRule(daysCount int) (DayRule, error) {
 }
 
 func (r DayRule) CalcNextDate(now time.Time, start time.Time) time.Time {
+	if now.Equal(start) && r.interval.Days == 1 {
+		return now
+	}
 	return CalcNextDateByInterval(now, start, r.interval)
 }

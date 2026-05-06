@@ -1,22 +1,20 @@
 package repeat_service
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
-	"github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task"
+	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
+	core_errors "github.com/nikitavaulin/task-manager-golang/internal/core/errors"
 	repeat_rule_parser "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/service/parse"
 )
 
-var ErrNoRepeatRule = errors.New("repeat rule is empty")
-
 func (s *RepeatTaskSevice) NextDate(now time.Time, dstart string, repeat string) (string, error) {
 	if len(repeat) == 0 {
-		return "", fmt.Errorf("failed to calc next date: %w", ErrNoRepeatRule)
+		return "", fmt.Errorf("failed to calc next date: %w", core_errors.ErrNoRepeatRule)
 	}
 
-	start, err := time.Parse(repeat_task.DateLayout, dstart)
+	start, err := time.Parse(domain.DateLayout, dstart)
 	if err != nil {
 		return "", fmt.Errorf("NextDate: failed to parse start date: %w", err)
 	}
@@ -28,5 +26,5 @@ func (s *RepeatTaskSevice) NextDate(now time.Time, dstart string, repeat string)
 
 	nextDate := repeatRule.CalcNextDate(now, start)
 
-	return nextDate.Format(repeat_task.DateLayout), nil
+	return nextDate.Format(domain.DateLayout), nil
 }

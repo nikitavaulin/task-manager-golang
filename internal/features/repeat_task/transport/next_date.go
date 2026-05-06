@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
 	core_errors "github.com/nikitavaulin/task-manager-golang/internal/core/errors"
 	core_http_response "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/response"
-	"github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task"
 )
 
 func (h *RepeatTaskHTTPTransportHandler) GetNextDate(rw http.ResponseWriter, r *http.Request) {
@@ -46,7 +46,7 @@ func getDateNowParam(nowStr *string) (time.Time, error) {
 }
 
 func parseDate(dateStr string) (time.Time, error) {
-	date, err := time.Parse(repeat_task.DateLayout, dateStr)
+	date, err := time.Parse(domain.DateLayout, dateStr)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("failed to parse date: %v: %w", err, core_errors.ErrInvalidArgument)
 	}
