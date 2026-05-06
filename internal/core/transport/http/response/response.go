@@ -3,6 +3,7 @@ package core_http_response
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 
 	core_errors "github.com/nikitavaulin/task-manager-golang/internal/core/errors"
@@ -58,7 +59,7 @@ func (h *HTTPResponseHandler) errorResponse(err error, msg string, statusCode in
 	// log
 	responseBody := map[string]string{
 		"message": msg,
-		"error":   err.Error(),
+		"error":   fmt.Errorf("ERROR: %s: %v", msg, err).Error(),
 	}
 	h.JSONResponse(responseBody, statusCode)
 }
