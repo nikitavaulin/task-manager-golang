@@ -59,7 +59,7 @@ func (h *HTTPResponseHandler) errorResponse(err error, msg string, statusCode in
 	// log
 	responseBody := map[string]string{
 		"message": msg,
-		"error":   fmt.Errorf("ERROR: %s: %v", msg, err).Error(),
+		"error":   fmt.Errorf("%s: %v", msg, err).Error(),
 	}
 	h.JSONResponse(responseBody, statusCode)
 }
