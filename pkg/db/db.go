@@ -11,9 +11,9 @@ import (
 const schema = `
 CREATE TABLE scheduler (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    date  CHAR(8) NOT NULL DEFAULT '',
-    title VARCHAR(256) NOT NULL DEFAULT 'Задача',
+    title VARCHAR(256) NOT NULL,
     comment TEXT,
+    date  CHAR(8) NOT NULL,
     repeat VARCHAR(128)
 );
 
