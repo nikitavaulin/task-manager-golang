@@ -16,6 +16,7 @@ type TaskRepository interface {
 	UpdateTask(task domain.Task) error
 	GetTasks(limit int, date, title *string) ([]domain.Task, error)
 	GetTask(taskID int64) (domain.Task, error)
+	DeleteTask(taskID int64) error
 }
 
 type RepeatTaskSevice interface {
