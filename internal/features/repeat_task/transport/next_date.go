@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
 	core_errors "github.com/nikitavaulin/task-manager-golang/internal/core/errors"
+	core_http_request "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/request"
 	core_http_response "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/response"
 )
 
@@ -54,22 +55,17 @@ func parseDate(dateStr string) (time.Time, error) {
 }
 
 func getNowDateRepeatQueryParams(r *http.Request) (*string, string, string, error) {
-	var now *string
+	now := core_http_request.GetStringQueryParam("now", r)
 
-	nowStr := r.URL.Query().Get("now")
-	if nowStr != "" {
-		now = &nowStr
-	}
-
-	date := r.URL.Query().Get("date")
-	if date == "" {
+	date := core_http_request.GetStringQueryParam("date", r)
+	if date == nil {
 		return nil, "", "", fmt.Errorf("date query param is empty: %w", core_errors.ErrInvalidArgument)
 	}
 
-	repeat := r.URL.Query().Get("repeat")
-	if repeat == "" {
+	repeat := core_http_request.GetStringQueryParam("repeat", r)
+	if repeat == nil {
 		return nil, "", "", fmt.Errorf("repeat query param is empty: %w", core_errors.ErrInvalidArgument)
 	}
 
-	return now, date, repeat, nil
+	return now, *date, *repeat, nil
 }
