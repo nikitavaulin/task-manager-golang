@@ -11,6 +11,9 @@ import (
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
 	repeat_service "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/service"
 	repeat_task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/transport"
+	task_repository "github.com/nikitavaulin/task-manager-golang/internal/features/task/repository"
+	task_service "github.com/nikitavaulin/task-manager-golang/internal/features/task/service"
+	task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/task/transport"
 	"github.com/nikitavaulin/task-manager-golang/pkg/db"
 )
 
@@ -34,11 +37,14 @@ func main() {
 	repeatTaskService := repeat_service.NewRepeatTaskService()
 	repeatTaskTransport := repeat_task_transport_http.NewRepeatTaskHTTPTransportHandler(repeatTaskService)
 
+	taskRepository := task_repository.NewTaskRepository(dbConn.DB)
+	taskService := task_service.NewTaskService(taskRepository, repeatTaskService)
+	taskTransport := task_transport_http.NewTaskHTTPTransportHandler(taskService)
+
 	router := core_http_server.NewRouter()
 	router.RegisterFileServer("/", webDirPath)
-	router.RegisterRoutes(
-		repeatTaskTransport.Routes()...,
-	)
+	router.RegisterRoutes(repeatTaskTransport.Routes()...)
+	router.RegisterRoutes(taskTransport.Routes()...)
 
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfig(),

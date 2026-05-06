@@ -1,0 +1,32 @@
+package task_transport_http
+
+import (
+	"net/http"
+
+	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
+	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
+)
+
+type TaskHTTPTransportHandler struct {
+	taskService TaskService
+}
+
+type TaskService interface {
+	CreateTask(task domain.Task) (int64, error)
+}
+
+func NewTaskHTTPTransportHandler(taskService TaskService) *TaskHTTPTransportHandler {
+	return &TaskHTTPTransportHandler{
+		taskService: taskService,
+	}
+}
+
+func (h *TaskHTTPTransportHandler) Routes() []core_http_server.Route {
+	return []core_http_server.Route{
+		{
+			Method:  http.MethodPost,
+			Path:    "/api/task",
+			Handler: h.CreateTask,
+		},
+	}
+}
