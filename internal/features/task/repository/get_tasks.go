@@ -67,6 +67,7 @@ func getTasksQueryWithArgs(limit int, date, title *string) (string, []any) {
 	default:
 		query = `
 			SELECT * FROM scheduler
+			ORDER BY date
 			LIMIT $1;
 		`
 		args = []any{limit}
