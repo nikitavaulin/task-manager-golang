@@ -36,8 +36,7 @@ func (h *HTTPResponseHandler) NoContentResponse(statusCode int) {
 	h.rw.WriteHeader(statusCode)
 }
 
-func (h *HTTPResponseHandler) NoContentJSONResponse(statusCode int) {
-	h.rw.WriteHeader(statusCode)
+func (h *HTTPResponseHandler) EmptyJSONResponse(statusCode int) {
 	h.JSONResponse(struct{}{}, statusCode)
 }
 

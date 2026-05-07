@@ -40,7 +40,7 @@ func (h *TaskHTTPTransportHandler) UpdateTask(rw http.ResponseWriter, r *http.Re
 		return
 	}
 
-	responseHandler.NoContentJSONResponse(http.StatusNoContent)
+	responseHandler.EmptyJSONResponse(http.StatusOK)
 }
 
 func updateTaskDomainFromDTO(dto UpdateTaskRequestDTO) (domain.Task, error) {

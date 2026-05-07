@@ -1,6 +1,10 @@
 package task_repository
 
-import "fmt"
+import (
+	"fmt"
+
+	core_errors "github.com/nikitavaulin/task-manager-golang/internal/core/errors"
+)
 
 func (r *TaskRepository) DeleteTask(taskID int64) error {
 	query := `
@@ -19,7 +23,7 @@ func (r *TaskRepository) DeleteTask(taskID int64) error {
 	}
 
 	if deleted == 0 {
-		return fmt.Errorf("task with ID=%d: %w", taskID, err)
+		return fmt.Errorf("task with ID=%d: %w", taskID, core_errors.ErrNotFound)
 	}
 
 	return nil
