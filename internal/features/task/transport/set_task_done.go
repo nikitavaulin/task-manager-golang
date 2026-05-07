@@ -6,7 +6,7 @@ import (
 	core_http_response "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/response"
 )
 
-func (h *TaskHTTPTransportHandler) DeleteTask(rw http.ResponseWriter, r *http.Request) {
+func (h *TaskHTTPTransportHandler) SetTaskDone(rw http.ResponseWriter, r *http.Request) {
 	responseHandler := core_http_response.NewHTTPResponseHandler(rw)
 
 	taskID, err := getTaskID(r)
@@ -15,8 +15,8 @@ func (h *TaskHTTPTransportHandler) DeleteTask(rw http.ResponseWriter, r *http.Re
 		return
 	}
 
-	if err := h.taskService.DeleteTask(taskID); err != nil {
-		responseHandler.ErrorResponse(err, "failed to delete task")
+	if err := h.taskService.SetTaskDone(taskID); err != nil {
+		responseHandler.ErrorResponse(err, "failed to set task done")
 		return
 	}
 

@@ -17,6 +17,7 @@ type TaskService interface {
 	GetTasks(limit int, search *string) ([]domain.Task, error)
 	GetTask(taskID int64) (domain.Task, error)
 	DeleteTask(taskID int64) error
+	SetTaskDone(taskID int64) error
 }
 
 func NewTaskHTTPTransportHandler(taskService TaskService) *TaskHTTPTransportHandler {
@@ -51,6 +52,11 @@ func (h *TaskHTTPTransportHandler) Routes() []core_http_server.Route {
 			Method:  http.MethodDelete,
 			Path:    "/api/task",
 			Handler: h.DeleteTask,
+		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/api/task/done",
+			Handler: h.SetTaskDone,
 		},
 	}
 }
