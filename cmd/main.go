@@ -7,8 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
 	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
+	auth_service "github.com/nikitavaulin/task-manager-golang/internal/features/auth/service"
+	auth_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/auth/trasnport"
 	repeat_service "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/service"
 	repeat_task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/transport"
 	task_repository "github.com/nikitavaulin/task-manager-golang/internal/features/task/repository"
@@ -26,6 +29,10 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer cancel()
 
+	if err := godotenv.Load(); err != nil {
+		fmt.Printf("no .env file found")
+	}
+
 	dbFile := tools_envparser.GetEnvVarOrDefault("TODO_DBFILE", dbFileDefault)
 	dbConn, err := db.Init(dbFile)
 	if err != nil {
@@ -41,10 +48,14 @@ func main() {
 	taskService := task_service.NewTaskService(taskRepository, repeatTaskService)
 	taskTransport := task_transport_http.NewTaskHTTPTransportHandler(taskService)
 
+	authService := auth_service.NewAuthService()
+	authTrasposrt := auth_transport_http.NewAuthHTTPTrasnportHandler(authService)
+
 	router := core_http_server.NewRouter()
 	router.RegisterFileServer("/", webDirPath)
 	router.RegisterRoutes(repeatTaskTransport.Routes()...)
 	router.RegisterRoutes(taskTransport.Routes()...)
+	router.RegisterRoutes(authTrasposrt.Routes()...)
 
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfig(),

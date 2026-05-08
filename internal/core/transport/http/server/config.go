@@ -15,13 +15,13 @@ type HTTPServerConfig struct {
 func NewHTTPServerConfig() *HTTPServerConfig {
 
 	return &HTTPServerConfig{
-		Address:          ParseServerPort(),
+		Address:          ":" + ParseServerPort(),
 		ShutdownDuration: ParseShutdownDuration(),
 	}
 }
 
 func ParseServerPort() string {
-	port := tools_envparser.GetEnvVarOrDefault("TODO_PORT", ":7540")
+	port := tools_envparser.GetEnvVarOrDefault("TODO_PORT", "7540")
 	return port
 }
 

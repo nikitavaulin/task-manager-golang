@@ -52,6 +52,9 @@ func (h *HTTPResponseHandler) ErrorResponse(err error, msg string) {
 	case errors.Is(err, core_errors.ErrInvalidArgument):
 		statusCode = http.StatusBadRequest
 
+	case errors.Is(err, core_errors.ErrForbidden):
+		statusCode = http.StatusForbidden
+
 	default:
 		statusCode = http.StatusInternalServerError
 	}
