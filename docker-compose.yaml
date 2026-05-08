@@ -1,0 +1,11 @@
+services:
+  task-manager:
+    build: .
+    container_name: task-manager
+    ports:
+      - "${HOST_PORT}:${TODO_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    
