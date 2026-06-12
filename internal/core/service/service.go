@@ -22,3 +22,8 @@ type RepeatTaskService interface {
 type AuthService interface {
 	SignIn(password string) (string, error)
 }
+
+type UserService interface {
+	CreateUser(user domain.User) (int64, error)
+	GetUser(userID int64) (domain.User, error)
+}

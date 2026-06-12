@@ -10,3 +10,8 @@ type TaskRepository interface {
 	GetTask(taskID int64) (domain.Task, error)
 	DeleteTask(taskID int64) error
 }
+
+type UserRepositroy interface {
+	CreateUser(user domain.User) (int64, error)
+	GetUser(userID int64) (domain.User, error)
+}
