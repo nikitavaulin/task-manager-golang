@@ -8,7 +8,7 @@ import (
 
 func (r *TaskRepository) DeleteTask(taskID int64) error {
 	query := `
-		DELETE FROM scheduler
+		DELETE FROM tasks
 		WHERE id = $1;
 	`
 

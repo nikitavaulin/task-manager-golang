@@ -6,8 +6,8 @@ import (
 	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
 )
 
-func (r *TaskRepository) GetTasks(limit int, date, title *string) ([]domain.Task, error) {
-	query, args := getTasksQueryWithArgs(limit, date, title)
+func (r *TaskRepository) GetTasks(userID int64, limit int, date, title *string) ([]domain.Task, error) {
+	query, args := getTasksQueryWithArgs(userID, limit, date, title)
 
 	rows, err := r.db.Query(query, args...)
 	if err != nil {
@@ -25,6 +25,8 @@ func (r *TaskRepository) GetTasks(limit int, date, title *string) ([]domain.Task
 			&taskModel.Comment,
 			&taskModel.Date,
 			&taskModel.Repeat,
+			&taskModel.CategoryID,
+			&taskModel.UserID,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan tasks from db: %w", err)
@@ -40,7 +42,7 @@ func (r *TaskRepository) GetTasks(limit int, date, title *string) ([]domain.Task
 	return tasks, nil
 }
 
-func getTasksQueryWithArgs(limit int, date, title *string) (string, []any) {
+func getTasksQueryWithArgs(userID int64, limit int, date, title *string) (string, []any) {
 	var (
 		query string
 		args  []any
@@ -48,29 +50,30 @@ func getTasksQueryWithArgs(limit int, date, title *string) (string, []any) {
 	switch {
 	case date != nil:
 		query = `
-			SELECT * FROM scheduler
-			WHERE date = $1
-			LIMIT $2;
+			SELECT * FROM tasks
+			WHERE userID = $1 AND date = $2
+			LIMIT $3;
 		`
-		args = []any{*date, limit}
+		args = []any{userID, *date, limit}
 
 	case title != nil:
 		query = `
-			SELECT * FROM scheduler
-			WHERE title LIKE $1 OR comment LIKE $1
+			SELECT * FROM tasks
+			WHERE userID = $1 AND title LIKE $2 OR comment LIKE $2
 			ORDER BY date
-			LIMIT $2;
+			LIMIT $3;
 		`
 		searchReg := "%" + *title + "%"
-		args = []any{searchReg, limit}
+		args = []any{userID, searchReg, limit}
 
 	default:
 		query = `
 			SELECT * FROM scheduler
+			WHERE userID = $1
 			ORDER BY date
-			LIMIT $1;
+			LIMIT $2;
 		`
-		args = []any{limit}
+		args = []any{userID, limit}
 	}
 	return query, args
 }

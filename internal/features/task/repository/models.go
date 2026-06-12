@@ -3,11 +3,13 @@ package task_repository
 import "github.com/nikitavaulin/task-manager-golang/internal/core/domain"
 
 type TaskModel struct {
-	ID      int64
-	Title   string
-	Date    string
-	Comment string
-	Repeat  string
+	ID         int64
+	Title      string
+	Date       string
+	Comment    string
+	Repeat     string
+	CategoryID int64
+	UserID     int64
 }
 
 func taskDomainFromModel(model TaskModel) domain.Task {
@@ -17,6 +19,8 @@ func taskDomainFromModel(model TaskModel) domain.Task {
 		model.Date,
 		model.Comment,
 		model.Repeat,
+		model.CategoryID,
+		model.UserID,
 	)
 }
 

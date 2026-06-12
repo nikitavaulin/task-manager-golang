@@ -9,7 +9,7 @@ import (
 type TaskService interface {
 	CreateTask(task domain.Task) (int64, error)
 	UpdateTask(task domain.Task) error
-	GetTasks(limit int, search *string) ([]domain.Task, error)
+	GetTasks(userID int64, limit int, search *string) ([]domain.Task, error)
 	GetTask(taskID int64) (domain.Task, error)
 	DeleteTask(taskID int64) error
 	SetTaskDone(taskID int64) error

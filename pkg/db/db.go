@@ -9,15 +9,35 @@ import (
 )
 
 const schema = `
-CREATE TABLE scheduler (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title VARCHAR(256) NOT NULL,
-    comment TEXT,
-    date  CHAR(8) NOT NULL,
-    repeat VARCHAR(128)
-);
+	CREATE TABLE users (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		username VARCHAR(60) NOT NULL UNIQUE,
+		full_name VARCHAR(60) DEFAULT 'Пользователь'
+	);
 
-CREATE INDEX scheduler_date ON scheduler(date);
+	CREATE TABLE task_categories (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		category_name VARCHAR(256) NOT NULL,
+		user_id INTEGER NOT NULL,
+
+		FOREIGN KEY (user_id) REFERENCES users(id)
+	);
+
+	CREATE TABLE tasks (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		title VARCHAR(256) NOT NULL,
+		comment TEXT,
+		date  CHAR(8) NOT NULL,
+		repeat VARCHAR(128),
+		category_id INTEGER NOT NULL,
+		user_id INTEGER NOT NULL,
+
+		FOREIGN KEY (category_id) REFERENCES task_categories(id),
+		FOREIGN KEY (user_id) REFERENCES users(id)
+	);
+
+	CREATE INDEX task_date ON tasks(date);
+	CREATE INDEX user_username ON users(username);
 `
 
 type DBConnection struct {

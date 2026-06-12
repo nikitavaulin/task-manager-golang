@@ -11,7 +11,7 @@ import (
 
 func (r *TaskRepository) GetTask(taskID int64) (domain.Task, error) {
 	query := `
-		SELECT * FROM scheduler
+		SELECT * FROM tasks
 		WHERE id = $1;
 	`
 
@@ -25,6 +25,8 @@ func (r *TaskRepository) GetTask(taskID int64) (domain.Task, error) {
 		&taskModel.Comment,
 		&taskModel.Date,
 		&taskModel.Repeat,
+		&taskModel.CategoryID,
+		&taskModel.UserID,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

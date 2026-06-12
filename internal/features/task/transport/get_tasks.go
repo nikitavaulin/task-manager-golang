@@ -16,9 +16,11 @@ const MaxTasksReturnCount = 50
 func (h *TaskHTTPTransportHandler) GetTasks(rw http.ResponseWriter, r *http.Request) {
 	responseHandler := core_http_response.NewHTTPResponseHandler(rw)
 
+	userID := int64(1) // TODO
+
 	searchParam := core_http_request.GetStringQueryParam("search", r)
 
-	tasks, err := h.taskService.GetTasks(MaxTasksReturnCount, searchParam)
+	tasks, err := h.taskService.GetTasks(userID, MaxTasksReturnCount, searchParam)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get tasks from service")
 		return

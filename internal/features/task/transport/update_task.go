@@ -12,11 +12,13 @@ import (
 )
 
 type UpdateTaskRequestDTO struct {
-	ID      string `json:"id"`
-	Title   string `json:"title"`
-	Date    string `json:"date"`
-	Comment string `json:"comment"`
-	Repeat  string `json:"repeat"`
+	ID         string `json:"id"`
+	Title      string `json:"title"`
+	Date       string `json:"date"`
+	Comment    string `json:"comment"`
+	Repeat     string `json:"repeat"`
+	CategoryID string `json:"category_id"`
+	UserID     string `json:"user_id"`
 }
 
 func (h *TaskHTTPTransportHandler) UpdateTask(rw http.ResponseWriter, r *http.Request) {
@@ -44,15 +46,26 @@ func (h *TaskHTTPTransportHandler) UpdateTask(rw http.ResponseWriter, r *http.Re
 }
 
 func updateTaskDomainFromDTO(dto UpdateTaskRequestDTO) (domain.Task, error) {
-	taskID, err := strconv.Atoi(dto.ID)
+	taskID, err := strconv.ParseInt(dto.ID, 10, 64)
 	if err != nil {
-		return domain.Task{}, fmt.Errorf("failed to convert ID: %v: %w", err, core_errors.ErrInvalidArgument)
+		return domain.Task{}, fmt.Errorf("failed to convert task ID: %v: %w", err, core_errors.ErrInvalidArgument)
 	}
+	categoryID, err := strconv.ParseInt(dto.CategoryID, 10, 64)
+	if err != nil {
+		return domain.Task{}, fmt.Errorf("failed to convert category ID: %v: %w", err, core_errors.ErrInvalidArgument)
+	}
+	userID, err := strconv.ParseInt(dto.UserID, 10, 64)
+	if err != nil {
+		return domain.Task{}, fmt.Errorf("failed to convert user ID: %v: %w", err, core_errors.ErrInvalidArgument)
+	}
+
 	return *domain.NewTask(
-		int64(taskID),
+		taskID,
 		dto.Title,
 		dto.Date,
 		dto.Comment,
 		dto.Repeat,
+		categoryID,
+		userID,
 	), nil
 }

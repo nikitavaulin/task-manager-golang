@@ -8,14 +8,15 @@ import (
 
 func (r *TaskRepository) UpdateTask(task domain.Task) error {
 	query := `
-		UPDATE scheduler
+		UPDATE tasks
 		SET	
 			title = $1,
 			comment = $2, 
 			date = $3, 
-			repeat = $4
+			repeat = $4,
+			category_id = $5
 		WHERE
-			id = $5;
+			id = $6;
 	`
 
 	result, err := r.db.Exec(
@@ -24,6 +25,7 @@ func (r *TaskRepository) UpdateTask(task domain.Task) error {
 		task.Comment,
 		task.Date,
 		task.Repeat,
+		task.CategoryID,
 		task.ID,
 	)
 	if err != nil {
@@ -44,7 +46,7 @@ func (r *TaskRepository) UpdateTask(task domain.Task) error {
 
 func (r *TaskRepository) UpdateTaskDate(taskID int64, newDate string) error {
 	query := `
-		UPDATE scheduler
+		UPDATE tasks
 		SET	
 			date = $1 
 		WHERE

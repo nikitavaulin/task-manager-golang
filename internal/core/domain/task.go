@@ -13,6 +13,9 @@ type Task struct {
 	Date    string
 	Comment string
 	Repeat  string
+
+	CategoryID int64
+	UserID     int64
 }
 
 func NewTaskUninitialized(
@@ -20,6 +23,8 @@ func NewTaskUninitialized(
 	date string,
 	comment string,
 	repeat string,
+	categoryId int64,
+	userId int64,
 ) *Task {
 	return NewTask(
 		UninitializedID,
@@ -27,6 +32,8 @@ func NewTaskUninitialized(
 		date,
 		comment,
 		repeat,
+		categoryId,
+		userId,
 	)
 }
 
@@ -36,16 +43,20 @@ func NewTask(
 	date string,
 	comment string,
 	repeat string,
+	categoryId int64,
+	userId int64,
 ) *Task {
 	if len(date) == 0 {
 		date = time.Now().Format(DateLayout)
 	}
 	return &Task{
-		ID:      id,
-		Title:   title,
-		Date:    date,
-		Comment: comment,
-		Repeat:  repeat,
+		ID:         id,
+		Title:      title,
+		Date:       date,
+		Comment:    comment,
+		Repeat:     repeat,
+		CategoryID: categoryId,
+		UserID:     userId,
 	}
 }
 

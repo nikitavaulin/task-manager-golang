@@ -7,7 +7,7 @@ import (
 	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
 )
 
-func (s *TaskService) GetTasks(limit int, search *string) ([]domain.Task, error) {
+func (s *TaskService) GetTasks(userID int64, limit int, search *string) ([]domain.Task, error) {
 	if limit < 1 {
 		return nil, fmt.Errorf("limit value should be > 1")
 	}
@@ -20,7 +20,7 @@ func (s *TaskService) GetTasks(limit int, search *string) ([]domain.Task, error)
 		}
 	}
 
-	tasks, err := s.taskRepo.GetTasks(limit, dateSearch, titleSearch)
+	tasks, err := s.taskRepo.GetTasks(userID, limit, dateSearch, titleSearch)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get tasks from repo: %w", err)
 	}

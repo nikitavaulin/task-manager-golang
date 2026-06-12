@@ -8,10 +8,10 @@ import (
 
 func (r *TaskRepository) CreateTask(task domain.Task) (int64, error) {
 	query := `
-		INSERT INTO scheduler
-			(title, comment, date, repeat)
+		INSERT INTO tasks
+			(title, comment, date, repeat, category_id, user_id)
 		VALUES
-			($1, $2, $3, $4);
+			($1, $2, $3, $4, $5, $6);
 	`
 
 	result, err := r.db.Exec(
@@ -20,6 +20,8 @@ func (r *TaskRepository) CreateTask(task domain.Task) (int64, error) {
 		task.Comment,
 		task.Date,
 		task.Repeat,
+		task.CategoryID,
+		task.UserID,
 	)
 	if err != nil {
 		return domain.UninitializedID, fmt.Errorf("failed to create task in db: %w", err)
