@@ -1,0 +1,29 @@
+package repeat_rules
+
+import (
+	"fmt"
+	"time"
+)
+
+type DayRule struct {
+	interval DateInterval
+}
+
+const MaxDayRepeat = 400
+
+func NewDayRule(daysCount int) (DayRule, error) {
+	if daysCount > MaxDayRepeat {
+		return DayRule{}, fmt.Errorf("days repeat interval should be less %d, got: %d", MaxDayRepeat, daysCount)
+	}
+	return DayRule{
+		interval: DateInterval{Days: daysCount},
+	}, nil
+
+}
+
+func (r DayRule) CalcNextDate(now time.Time, start time.Time) time.Time {
+	if now.Equal(start) && r.interval.Days == 1 {
+		return now
+	}
+	return CalcNextDateByInterval(now, start, r.interval)
+}
