@@ -23,6 +23,7 @@ func (h *UserTransportHTTP) Routes() []core_http_server.Route {
 			Method:  http.MethodGet,
 			Path:    "/api/users/{id}",
 			Handler: h.GetUser,
+			Auth:    true,
 		},
 		{
 			Method:  http.MethodPost,

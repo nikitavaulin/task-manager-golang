@@ -15,6 +15,14 @@ type TaskService interface {
 	SetTaskDone(taskID int64) error
 }
 
+type TaskCategoryService interface {
+	CreateCategory(category domain.TaskCategory) (int64, error)
+	GetCategories(userID int64) ([]domain.TaskCategory, error)
+	GetCategoryByID(categoryID int64) (domain.TaskCategory, error)
+	UpdateCategoryName(categoryID int64, updatedName string) error
+	DeleteCategory(categoryID int64) error
+}
+
 type RepeatTaskService interface {
 	NextDate(now time.Time, dstart string, repeat string) (string, error)
 }

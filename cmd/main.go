@@ -15,6 +15,9 @@ import (
 	task_repository "github.com/nikitavaulin/task-manager-golang/internal/features/task/repository"
 	task_service "github.com/nikitavaulin/task-manager-golang/internal/features/task/service"
 	task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/task/transport"
+	task_category_repository "github.com/nikitavaulin/task-manager-golang/internal/features/task_category/repository"
+	task_category_service "github.com/nikitavaulin/task-manager-golang/internal/features/task_category/service"
+	task_category_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/task_category/transport"
 	user_repository "github.com/nikitavaulin/task-manager-golang/internal/features/user/repository"
 	user_service "github.com/nikitavaulin/task-manager-golang/internal/features/user/service"
 	user_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/user/transport"
@@ -42,18 +45,16 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	// appPassword, err := tools_envparser.GetAppPassword()
-	// if err != nil {
-	// 	fmt.Printf("failed to get app password: %v", err)
-	// 	os.Exit(1)
-	// }
-
 	repeatTaskService := repeat_service.NewRepeatTaskService()
 	repeatTaskTransport := repeat_task_transport_http.NewRepeatTaskHTTPTransportHandler(repeatTaskService)
 
 	taskRepository := task_repository.NewTaskRepository(dbConn.DB)
 	taskService := task_service.NewTaskService(taskRepository, repeatTaskService)
 	taskTransport := task_transport_http.NewTaskHTTPTransportHandler(taskService)
+
+	taskCategoryRepo := task_category_repository.NewTaskCategoryRepository(dbConn.DB)
+	taskCategoryService := task_category_service.NewTaskCategoryService(taskCategoryRepo)
+	taskCategoryTransport := task_category_transport_http.NewTaskCategoryTransportHTTP(taskCategoryService)
 
 	userRepo := user_repository.NewUserRepository(dbConn.DB)
 	userService := user_service.NewUserService(userRepo)
@@ -64,6 +65,7 @@ func main() {
 	router.RegisterRoutes(repeatTaskTransport.Routes()...)
 	router.RegisterRoutes(taskTransport.Routes()...)
 	router.RegisterRoutes(userTransport.Routes()...)
+	router.RegisterRoutes(taskCategoryTransport.Routes()...)
 
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfig(),

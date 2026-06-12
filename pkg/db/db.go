@@ -18,7 +18,7 @@ const schema = `
 
 	CREATE TABLE task_categories (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		category_name VARCHAR(256) NOT NULL,
+		category_name VARCHAR(60) NOT NULL,
 		user_id INTEGER NOT NULL,
 
 		FOREIGN KEY (user_id) REFERENCES users(id)
