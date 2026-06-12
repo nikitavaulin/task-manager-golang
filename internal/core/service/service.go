@@ -24,6 +24,7 @@ type AuthService interface {
 }
 
 type UserService interface {
-	CreateUser(user domain.User) (int64, error)
-	GetUser(userID int64) (domain.User, error)
+	CreateUser(user domain.User, password string) (int64, error)
+	GetUserByID(userID int64) (domain.User, error)
+	SignIn(username string, password string) (string, error)
 }

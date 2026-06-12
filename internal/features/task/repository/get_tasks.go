@@ -51,7 +51,7 @@ func getTasksQueryWithArgs(userID int64, limit int, date, title *string) (string
 	case date != nil:
 		query = `
 			SELECT * FROM tasks
-			WHERE userID = $1 AND date = $2
+			WHERE user_id = $1 AND date = $2
 			LIMIT $3;
 		`
 		args = []any{userID, *date, limit}
@@ -59,7 +59,7 @@ func getTasksQueryWithArgs(userID int64, limit int, date, title *string) (string
 	case title != nil:
 		query = `
 			SELECT * FROM tasks
-			WHERE userID = $1 AND title LIKE $2 OR comment LIKE $2
+			WHERE user_id = $1 AND title LIKE $2 OR comment LIKE $2
 			ORDER BY date
 			LIMIT $3;
 		`
@@ -68,8 +68,8 @@ func getTasksQueryWithArgs(userID int64, limit int, date, title *string) (string
 
 	default:
 		query = `
-			SELECT * FROM scheduler
-			WHERE userID = $1
+			SELECT * FROM tasks
+			WHERE user_id = $1
 			ORDER BY date
 			LIMIT $2;
 		`

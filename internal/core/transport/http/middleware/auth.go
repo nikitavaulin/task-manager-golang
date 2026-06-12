@@ -2,23 +2,16 @@ package core_http_middleware
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
-	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
+	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
 	tools_jwt "github.com/nikitavaulin/task-manager-golang/internal/core/tools/jwt"
-	tools_passwordhasher "github.com/nikitavaulin/task-manager-golang/internal/core/tools/password_hasher"
 )
 
 func Auth() Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			appPassword, err := tools_envparser.GetAppPassword()
-			if err != nil {
-				errMsg := fmt.Sprintf("ERROR: failed to get app password: %v\n", err)
-				http.Error(w, errMsg, http.StatusInternalServerError)
-				return
-			}
-
 			var jwt string
 			cookie, err := r.Cookie("token")
 			if err == nil {
@@ -26,37 +19,37 @@ func Auth() Middleware {
 			}
 
 			if len(jwt) == 0 {
-				http.Error(w, "Authentification required", http.StatusUnauthorized)
+				http.Error(w, "Authentification required (empty cookie)", http.StatusUnauthorized)
 				return
 			}
-			passwordHash, ok := getUserPasswordHashFromJWT(jwt)
+
+			username, ok := getUsernameFromJWT(jwt)
 			if !ok {
-				http.Error(w, "Authentification required", http.StatusUnauthorized)
+				http.Error(w, "Authentification required (invalid token)", http.StatusUnauthorized)
 				return
 			}
 
-			if !tools_passwordhasher.VerifyPassword(appPassword, passwordHash) {
-				http.Error(w, "Authentification required", http.StatusUnauthorized)
-				return
-			}
+			ctx := r.Context()
+			ctx = domain.UsernameToContext(ctx, username)
 
-			next.ServeHTTP(w, r)
+			next.ServeHTTP(w, r.WithContext(ctx))
 		})
 	}
 }
 
-func getUserPasswordHashFromJWT(jwt string) (string, bool) {
+func getUsernameFromJWT(jwt string) (string, bool) {
 	claims, err := tools_jwt.DecodeClaims(jwt)
 	if err != nil {
+		log.Printf("ERROR: %v", err)
 		return "", false
 	}
 
-	value, ok := claims["password"]
+	value, ok := claims["username"]
 	if !ok {
 		return "", false
 	}
 
-	passwordHash := fmt.Sprint(value)
-	return passwordHash, true
+	username := fmt.Sprint(value)
+	return username, true
 
 }

@@ -12,7 +12,8 @@ const schema = `
 	CREATE TABLE users (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
 		username VARCHAR(60) NOT NULL UNIQUE,
-		full_name VARCHAR(60) DEFAULT 'Пользователь'
+		full_name VARCHAR(60) DEFAULT 'Пользователь',
+		password_hash TEXT NOT NULL
 	);
 
 	CREATE TABLE task_categories (

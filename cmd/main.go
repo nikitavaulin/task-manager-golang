@@ -10,13 +10,14 @@ import (
 	"github.com/joho/godotenv"
 	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
-	auth_service "github.com/nikitavaulin/task-manager-golang/internal/features/auth/service"
-	auth_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/auth/transport"
 	repeat_service "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/service"
 	repeat_task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/repeat_task/transport"
 	task_repository "github.com/nikitavaulin/task-manager-golang/internal/features/task/repository"
 	task_service "github.com/nikitavaulin/task-manager-golang/internal/features/task/service"
 	task_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/task/transport"
+	user_repository "github.com/nikitavaulin/task-manager-golang/internal/features/user/repository"
+	user_service "github.com/nikitavaulin/task-manager-golang/internal/features/user/service"
+	user_transport_http "github.com/nikitavaulin/task-manager-golang/internal/features/user/transport"
 	"github.com/nikitavaulin/task-manager-golang/pkg/db"
 )
 
@@ -41,11 +42,11 @@ func main() {
 	}
 	defer dbConn.Close()
 
-	appPassword, err := tools_envparser.GetAppPassword()
-	if err != nil {
-		fmt.Printf("failed to get app password: %v", err)
-		os.Exit(1)
-	}
+	// appPassword, err := tools_envparser.GetAppPassword()
+	// if err != nil {
+	// 	fmt.Printf("failed to get app password: %v", err)
+	// 	os.Exit(1)
+	// }
 
 	repeatTaskService := repeat_service.NewRepeatTaskService()
 	repeatTaskTransport := repeat_task_transport_http.NewRepeatTaskHTTPTransportHandler(repeatTaskService)
@@ -54,14 +55,15 @@ func main() {
 	taskService := task_service.NewTaskService(taskRepository, repeatTaskService)
 	taskTransport := task_transport_http.NewTaskHTTPTransportHandler(taskService)
 
-	authService := auth_service.NewAuthService(appPassword)
-	authTransposrt := auth_transport_http.NewAuthHTTPTrasnportHandler(authService)
+	userRepo := user_repository.NewUserRepository(dbConn.DB)
+	userService := user_service.NewUserService(userRepo)
+	userTransport := user_transport_http.NewUserTransportHTTP(userService)
 
 	router := core_http_server.NewRouter()
 	router.RegisterFileServer("/", webDirPath)
 	router.RegisterRoutes(repeatTaskTransport.Routes()...)
 	router.RegisterRoutes(taskTransport.Routes()...)
-	router.RegisterRoutes(authTransposrt.Routes()...)
+	router.RegisterRoutes(userTransport.Routes()...)
 
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewHTTPServerConfig(),

@@ -16,7 +16,7 @@ func (h *UserTransportHTTP) GetUser(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userService.GetUser(userID)
+	user, err := h.userService.GetUserByID(userID)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to get user")
 		return

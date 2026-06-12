@@ -13,16 +13,27 @@ type IDResponse struct {
 	ID string `json:"id"`
 }
 
+type CreateUserRequestDTO struct {
+	Username string `json:"username"`
+	FullName string `json:"full_name"`
+	Password string `json:"password"`
+}
+
 func (h *UserTransportHTTP) CreateUser(rw http.ResponseWriter, r *http.Request) {
 	responseHandler := core_http_response.NewHTTPResponseHandler(rw)
 
-	var user domain.User
-	if err := core_http_request.Decode(r, &user); err != nil {
+	var userDTO CreateUserRequestDTO
+	if err := core_http_request.Decode(r, &userDTO); err != nil {
 		responseHandler.ErrorResponse(err, "failed to decode user")
 		return
 	}
 
-	userID, err := h.userService.CreateUser(user)
+	user := domain.User{
+		Username: userDTO.Username,
+		FullName: userDTO.FullName,
+	}
+
+	userID, err := h.userService.CreateUser(user, userDTO.Password)
 	if err != nil {
 		responseHandler.ErrorResponse(err, "failed to create user")
 		return

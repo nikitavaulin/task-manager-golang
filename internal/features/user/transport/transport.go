@@ -21,13 +21,18 @@ func (h *UserTransportHTTP) Routes() []core_http_server.Route {
 	return []core_http_server.Route{
 		{
 			Method:  http.MethodGet,
-			Path:    "/users/{id}",
+			Path:    "/api/users/{id}",
 			Handler: h.GetUser,
 		},
 		{
 			Method:  http.MethodPost,
-			Path:    "/auth/register",
+			Path:    "/api/auth/register",
 			Handler: h.CreateUser,
+		},
+		{
+			Method:  http.MethodPost,
+			Path:    "/api/auth/login",
+			Handler: h.SignIn,
 		},
 	}
 }

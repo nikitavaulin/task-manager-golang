@@ -8,9 +8,10 @@ import (
 )
 
 type User struct {
-	ID       int64  `json:"id"`
-	Username string `json:"username"`
-	FullName string `json:"full_name"`
+	ID           int64  `json:"id"`
+	Username     string `json:"username"`
+	FullName     string `json:"full_name"`
+	PasswordHash string `json:"-"`
 }
 
 const (
@@ -18,6 +19,8 @@ const (
 	MaxUsernameLen = 60
 	MinFullNameLen = 3
 	MaxFullNameLen = 60
+	MinPasswordLen = 3
+	MaxPasswordLen = 60
 )
 
 func (u *User) Validate() error {
@@ -26,6 +29,13 @@ func (u *User) Validate() error {
 	}
 	if err := core_validation.ValidateIsIntInBounds(len(u.FullName), MinFullNameLen, MaxFullNameLen); err != nil {
 		return fmt.Errorf("invalid fullname: %w: %w", err, core_errors.ErrInvalidArgument)
+	}
+	return nil
+}
+
+func (u *User) ValidatePassword(password string) error {
+	if err := core_validation.ValidateIsIntInBounds(len(password), MinPasswordLen, MaxPasswordLen); err != nil {
+		return fmt.Errorf("invalid password length: %w: %w", err, core_errors.ErrInvalidArgument)
 	}
 	return nil
 }

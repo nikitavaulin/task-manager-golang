@@ -13,5 +13,6 @@ type TaskRepository interface {
 
 type UserRepositroy interface {
 	CreateUser(user domain.User) (int64, error)
-	GetUser(userID int64) (domain.User, error)
+	GetUserByID(userID int64) (domain.User, error)
+	GetUserByUsername(username string) (domain.User, error)
 }
