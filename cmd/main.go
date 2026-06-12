@@ -41,6 +41,12 @@ func main() {
 	}
 	defer dbConn.Close()
 
+	appPassword, err := tools_envparser.GetAppPassword()
+	if err != nil {
+		fmt.Printf("failed to get app password: %v", err)
+		os.Exit(1)
+	}
+
 	repeatTaskService := repeat_service.NewRepeatTaskService()
 	repeatTaskTransport := repeat_task_transport_http.NewRepeatTaskHTTPTransportHandler(repeatTaskService)
 
@@ -48,7 +54,7 @@ func main() {
 	taskService := task_service.NewTaskService(taskRepository, repeatTaskService)
 	taskTransport := task_transport_http.NewTaskHTTPTransportHandler(taskService)
 
-	authService := auth_service.NewAuthService()
+	authService := auth_service.NewAuthService(appPassword)
 	authTransposrt := auth_transport_http.NewAuthHTTPTrasnportHandler(authService)
 
 	router := core_http_server.NewRouter()

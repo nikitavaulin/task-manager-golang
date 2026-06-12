@@ -3,24 +3,15 @@ package task_transport_http
 import (
 	"net/http"
 
-	"github.com/nikitavaulin/task-manager-golang/internal/core/domain"
+	"github.com/nikitavaulin/task-manager-golang/internal/core/service"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
 )
 
 type TaskHTTPTransportHandler struct {
-	taskService TaskService
+	taskService service.TaskService
 }
 
-type TaskService interface {
-	CreateTask(task domain.Task) (int64, error)
-	UpdateTask(task domain.Task) error
-	GetTasks(limit int, search *string) ([]domain.Task, error)
-	GetTask(taskID int64) (domain.Task, error)
-	DeleteTask(taskID int64) error
-	SetTaskDone(taskID int64) error
-}
-
-func NewTaskHTTPTransportHandler(taskService TaskService) *TaskHTTPTransportHandler {
+func NewTaskHTTPTransportHandler(taskService service.TaskService) *TaskHTTPTransportHandler {
 	return &TaskHTTPTransportHandler{
 		taskService: taskService,
 	}

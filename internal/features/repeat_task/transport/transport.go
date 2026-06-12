@@ -2,20 +2,16 @@ package repeat_task_transport_http
 
 import (
 	"net/http"
-	"time"
 
+	"github.com/nikitavaulin/task-manager-golang/internal/core/service"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
 )
 
 type RepeatTaskHTTPTransportHandler struct {
-	repeatTaskService RepeatTaskService
+	repeatTaskService service.RepeatTaskService
 }
 
-type RepeatTaskService interface {
-	NextDate(now time.Time, dstart string, repeat string) (string, error)
-}
-
-func NewRepeatTaskHTTPTransportHandler(service RepeatTaskService) *RepeatTaskHTTPTransportHandler {
+func NewRepeatTaskHTTPTransportHandler(service service.RepeatTaskService) *RepeatTaskHTTPTransportHandler {
 	return &RepeatTaskHTTPTransportHandler{
 		repeatTaskService: service,
 	}

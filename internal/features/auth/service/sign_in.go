@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	core_errors "github.com/nikitavaulin/task-manager-golang/internal/core/errors"
-	tools_envparser "github.com/nikitavaulin/task-manager-golang/internal/core/tools/env_parser"
 	tools_jwt "github.com/nikitavaulin/task-manager-golang/internal/core/tools/jwt"
 	tools_passwordhasher "github.com/nikitavaulin/task-manager-golang/internal/core/tools/password_hasher"
 )
@@ -14,12 +13,7 @@ func (s *AuthService) SignIn(password string) (string, error) {
 		return "", fmt.Errorf("invalid password: %w", err)
 	}
 
-	appPassword, err := tools_envparser.GetAppPassword()
-	if err != nil {
-		return "", fmt.Errorf("SignIn: %w", err)
-	}
-
-	if !verifyPassword(appPassword, password) {
+	if !verifyPassword(s.appPassword, password) {
 		return "", fmt.Errorf("wrong password: %w", core_errors.ErrInvalidArgument)
 	}
 

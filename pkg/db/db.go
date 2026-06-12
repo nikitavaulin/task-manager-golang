@@ -39,6 +39,7 @@ func Init(dbFile string) (*DBConnection, error) {
 
 	if isNeedInstall {
 		if _, err := db.Exec(schema); err != nil {
+			db.Close()
 			return nil, fmt.Errorf("failed to apply schema db: %w", err)
 		}
 	}

@@ -1,6 +1,6 @@
 package domain
 
 const (
-	UninitializedID int64 = -1
+	UninitializedID int64 = 0
 	DateLayout            = "20060102"
 )

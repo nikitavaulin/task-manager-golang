@@ -3,18 +3,15 @@ package auth_transport_http
 import (
 	"net/http"
 
+	"github.com/nikitavaulin/task-manager-golang/internal/core/service"
 	core_http_server "github.com/nikitavaulin/task-manager-golang/internal/core/transport/http/server"
 )
 
 type AuthHTTPTrasnportHandler struct {
-	authService AuthService
+	authService service.AuthService
 }
 
-type AuthService interface {
-	SignIn(password string) (string, error)
-}
-
-func NewAuthHTTPTrasnportHandler(authService AuthService) *AuthHTTPTrasnportHandler {
+func NewAuthHTTPTrasnportHandler(authService service.AuthService) *AuthHTTPTrasnportHandler {
 	return &AuthHTTPTrasnportHandler{
 		authService: authService,
 	}
